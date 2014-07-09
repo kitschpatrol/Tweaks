@@ -7,14 +7,11 @@
  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#ifndef FB_TWEAK_ENABLED
 
-#if DEBUG
-#define FB_TWEAK_ENABLED 1
-#define FB_TWEAK_SERVER_ENABLED 1
-#else
-#define FB_TWEAK_ENABLED 0
-#define FB_TWEAK_SERVER_ENABLED 0
-#endif
+#import <Foundation/Foundation.h>
+#import "FBTweakClient.h"
 
-#endif
+@interface FBTweakServer : NSObject<NSNetServiceDelegate, FBTweakClientDelegate>
+- (BOOL)start;
+- (void)stop;
+@end

@@ -86,7 +86,7 @@
   CGFloat dist = sqrtf((radius - point.x) * (radius - point.x) + (radius - point.y) * (radius - point.y));
 
   if (dist <= radius) {
-    [self colorWheelValueWithPosition:point hue:&_hue saturation:&_saturation];
+    [self colorWheelValueWithPosition:point radius:radius hue:&_hue saturation:&_saturation];
     [self setSelectedPoint:point];
     [self sendActionsForControlEvents:UIControlEventValueChanged];
   }
@@ -121,11 +121,11 @@
 
 - (void)displayLayer:(CALayer *)layer
 {
-  CGFloat dimension = MIN(CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
-  CFMutableDataRef bitmapData = CFDataCreateMutable(NULL, 0);
-  CFDataSetLength(bitmapData, dimension * dimension * 4);
-  [self colorWheelBitmap:CFDataGetMutableBytePtr(bitmapData) withSize:CGSizeMake(dimension, dimension)];
-  id image = [self imageWithRGBAData:bitmapData width:dimension height:dimension];
+  // Make sure we get an @2x bitmap back on retina devices
+  CGFloat bitmapEdgeLength = MIN(self.layer.bounds.size.width, self.layer.bounds.size.height ) * [[UIScreen mainScreen] scale];
+  CFMutableDataRef bitmapData = CFDataCreateMutable(NULL, bitmapEdgeLength * bitmapEdgeLength * 4);
+  [self colorWheelBitmap:CFDataGetMutableBytePtr(bitmapData) withSize:CGSizeMake(bitmapEdgeLength, bitmapEdgeLength)];;
+  id image = [self imageWithRGBAData:bitmapData width:bitmapEdgeLength height:bitmapEdgeLength];
   CFRelease(bitmapData);
   self.layer.contents = image;
 }
@@ -154,7 +154,7 @@
   for (int y = 0; y < size.width; y++) {
     for (int x = 0; x < size.height; x++) {
       float hue, saturation, a = 0.0f;
-      [self colorWheelValueWithPosition:CGPointMake(x, y) hue:&hue saturation:&saturation];
+      [self colorWheelValueWithPosition:CGPointMake(x, y) radius:(size.width / 2) hue:&hue saturation:&saturation];
       RGB rgb = {0.0f, 0.0f, 0.0f, 0.0f};
       if (saturation < 1.0) {
         // Antialias the edge of the circle.
@@ -173,9 +173,9 @@
   }
 }
 
-- (void)colorWheelValueWithPosition:(CGPoint)position hue:(out CGFloat*)hue saturation:(out CGFloat*)saturation
+- (void)colorWheelValueWithPosition:(CGPoint)position radius:(CGFloat)radius hue:(out CGFloat*)hue saturation:(out CGFloat*)saturation
 {
-  int c = CGRectGetWidth(self.bounds) / 2;
+  int c = radius;
   float dx = (float)(position.x - c) / c;
   float dy = (float)(position.y - c) / c;
   float d = sqrtf((float)(dx*dx + dy*dy));
@@ -188,7 +188,7 @@
   }
 }
 
-- (id)imageWithRGBAData:(CFDataRef)data width:(NSUInteger)width  height:(NSUInteger)height
+- (id)imageWithRGBAData:(CFDataRef)data width:(NSUInteger)width height:(NSUInteger)height
 {
   CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData(data);
   CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();

@@ -150,7 +150,7 @@ return mode;
   self.textLabel.text = tweak.name;
   FBTweakValue value = (tweak.currentValue ?: tweak.defaultValue);
   [self _updateMode:[self mode]];
-  [self _updateValue:value write:NO];
+  [self _updateValue:value primary:YES write:NO];
 }
 
 - (void)_updateMode:(_FBTweakTableViewCellMode)mode

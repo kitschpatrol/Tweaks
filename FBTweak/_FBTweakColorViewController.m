@@ -13,7 +13,7 @@
 #import "FBColorUtils.h"
 #import "FBTweak.h"
 
-@interface FBTweakColorViewController () <FBColorViewDelegate>
+@interface _FBTweakColorViewController () <FBColorViewDelegate>
 {
   @private
 
@@ -24,7 +24,7 @@
 
 @end
 
-@implementation FBTweakColorViewController
+@implementation _FBTweakColorViewController
 
 - (instancetype)initWithTweak:(FBTweak*)tweak
 {
@@ -40,10 +40,13 @@
 {
   [super viewDidLoad];
 
+  self.view.backgroundColor = [UIColor whiteColor];
   UISegmentedControl* segmentedControl = [self _createSegmentedControl];
   self.navigationItem.titleView = segmentedControl;
   segmentedControl.selectedSegmentIndex = 0;
   [self _segmentControlDidChangeValue:segmentedControl];
+  
+  self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(_done)];
 }
 
 #pragma mark - FBColorViewDelegate methods
@@ -99,6 +102,11 @@
   UIEdgeInsets insets = UIEdgeInsetsMake(topInset, 0, 0, 0);
   view.scrollView.contentInset = insets;
   view.scrollView.scrollIndicatorInsets = insets;
+}
+
+- (void)_done
+{
+  [_delegate tweakColorViewControllerSelectedDone:self];
 }
 
 @end

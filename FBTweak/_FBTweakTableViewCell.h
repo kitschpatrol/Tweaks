@@ -17,6 +17,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   _FBTweakTableViewCellModeInteger,
   _FBTweakTableViewCellModeReal,
   _FBTweakTableViewCellModeString,
+  _FBTweakTableViewCellModeAction,
   _FBTweakTableViewCellModeColor,
 };
 

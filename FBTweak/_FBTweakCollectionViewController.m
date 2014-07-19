@@ -14,7 +14,7 @@
 #import "_FBTweakTableViewCell.h"
 #import "_FBTweakColorViewController.h"
 
-@interface _FBTweakCollectionViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface _FBTweakCollectionViewController () <UITableViewDelegate, UITableViewDataSource, _FBTweakColorViewControllerDelegate>
 @end
 
 @implementation _FBTweakCollectionViewController {
@@ -69,6 +69,8 @@
 {
   [_delegate tweakCollectionViewControllerSelectedDone:self];
 }
+
+
 
 - (void)_keyboardFrameChanged:(NSNotification *)notification
 {
@@ -130,11 +132,16 @@
 {
   _FBTweakTableViewCell *cell = (_FBTweakTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
   if ([cell mode] == _FBTweakTableViewCellModeColor) {
-    FBTweakCollection *collection = _tweakCategory.tweakCollections[indexPath.section];
+    FBTweakCollection *collection = _sortedCollections[indexPath.section];
     FBTweak *tweak = collection.tweaks[indexPath.row];
-    FBTweakColorViewController *rgbViewController = [[FBTweakColorViewController alloc] initWithTweak:tweak];
+    _FBTweakColorViewController *rgbViewController = [[_FBTweakColorViewController alloc] initWithTweak:tweak];
+    rgbViewController.delegate = self;
     [self.navigationController pushViewController:rgbViewController animated:YES];
   }
+}
+
+- (void)tweakColorViewControllerSelectedDone:(_FBTweakColorViewController *)viewController {
+  [self _done];
 }
 
 @end

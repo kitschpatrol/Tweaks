@@ -11,10 +11,11 @@
 #import "FBTweakViewController.h"
 #import "_FBTweakCategoryViewController.h"
 #import "_FBTweakCollectionViewController.h"
+#import "_FBTweakColorViewController.h"
 
 NSString *const FBTweakShakeViewControllerDidDismissNotification = @"FBTweakShakeViewControllerDidDismissNotification";
 
-@interface FBTweakViewController () <_FBTweakCategoryViewControllerDelegate, _FBTweakCollectionViewControllerDelegate>
+@interface FBTweakViewController () <_FBTweakCategoryViewControllerDelegate, _FBTweakCollectionViewControllerDelegate, _FBTweakColorViewControllerDelegate>
 @end
 
 @implementation FBTweakViewController {
@@ -47,6 +48,11 @@ NSString *const FBTweakShakeViewControllerDidDismissNotification = @"FBTweakShak
 }
 
 - (void)tweakCollectionViewControllerSelectedDone:(_FBTweakCollectionViewController *)viewController
+{
+  [_tweaksDelegate tweakViewControllerPressedDone:self];
+}
+
+- (void)tweakColorViewControllerSelectedDone:(_FBTweakColorViewController *)viewController
 {
   [_tweaksDelegate tweakViewControllerPressedDone:self];
 }

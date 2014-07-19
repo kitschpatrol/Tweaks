@@ -85,11 +85,16 @@
   CGFloat radius = CGRectGetWidth(self.bounds) / 2;
   CGFloat dist = sqrtf((radius - point.x) * (radius - point.x) + (radius - point.y) * (radius - point.y));
 
-  if (dist <= radius) {
-    [self colorWheelValueWithPosition:point radius:radius hue:&_hue saturation:&_saturation];
-    [self setSelectedPoint:point];
-    [self sendActionsForControlEvents:UIControlEventValueChanged];
+  // Clamp touch point to perimeter circle
+  if (dist >= radius) {
+    CGPoint wheelCenter = CGPointMake(radius, radius);
+    CGFloat theta = atan2(point.y - wheelCenter.y, point.x - wheelCenter.x);
+    point = CGPointMake(radius * cos(theta) + wheelCenter.x, radius * sin(theta) + wheelCenter.y);
   }
+  
+  [self colorWheelValueWithPosition:point radius:radius hue:&_hue saturation:&_saturation];
+  [self setSelectedPoint:point];
+  [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 - (void)setSelectedPoint:(CGPoint)point

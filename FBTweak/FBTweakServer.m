@@ -257,7 +257,7 @@ static void serverAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
     return NO;
   }
   
-  NSData *socketAddressActualData = (__bridge NSData *)CFSocketCopyAddress(_listeningSocket);
+  NSData *socketAddressActualData = (__bridge_transfer NSData *)CFSocketCopyAddress(_listeningSocket);
   
   struct sockaddr_in socketAddressActual;
   memcpy(&socketAddressActual, [socketAddressActualData bytes], [socketAddressActualData length]);
